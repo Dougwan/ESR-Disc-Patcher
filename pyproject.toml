@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edp"
+version = "0.1.0"
+description = "Aplica/remove o patch ESR em imagens de disco (ISO) de PlayStation 2."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "PS2_EXPLOIT" }]
+keywords = ["ps2", "esr", "iso", "udf", "homebrew", "playstation2"]
+# Sem dependencias de runtime: apenas a biblioteca padrao (inclui tkinter na GUI).
+# Roda igual em macOS, Linux e Windows (ver docs/04-portabilidade.md).
+dependencies = []
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Utilities",
+]
+
+[project.scripts]
+# CLI e GUI: entry points cross-platform (geram executaveis em Scripts/bin).
+edp = "edp.cli:main"
+edp-gui = "edp.gui.app:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+edp = ["assets/*.bin", "assets/fdvdb/*", "assets/icons/*"]
