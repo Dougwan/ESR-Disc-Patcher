@@ -4,7 +4,7 @@
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)
 ![Plataformas: macOS | Linux | Windows](<https://img.shields.io/badge/plataformas-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey>)
 ![Dependências: 0 em runtime](<https://img.shields.io/badge/depend%C3%AAncias-0%20em%20runtime-success>)
-![Feito com AI-assisted](<https://img.shields.io/badge/feito%20com-AI--assisted-8A2BE2>)
+![AI-assisted](<https://img.shields.io/badge/AI--assisted-8A2BE2>)
 
 Transforme a ISO do seu próprio jogo de PS2 em um disco que o console aceita e
 inicia, sem modchip.
