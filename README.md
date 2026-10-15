@@ -1,4 +1,4 @@
-# ![EDP](src/edp/assets/icons/edp_128.png) EDP — ESR Disc Patcher
+# EDP — ESR Disc Patcher
 
 [![Licença: GPL-3.0-or-later](https://img.shields.io/badge/licen%C3%A7a-GPL--3.0--or--later-blue)](LICENSE)
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)
@@ -24,7 +24,7 @@ loader **ESR**.
 
 Pense no disco como um **envelope**. O console não lê o conteúdo: ele
 **inspeciona a etiqueta** do envelope e decide se aceita. O EDP reescreve essa
-etiqueta (os *descritores* do disco) para que o console o trate como um
+etiqueta (os _descritores_ do disco) para que o console o trate como um
 **DVD-Video**, gesto que o leitor reconhece. **O executável do jogo não é
 alterado** — o jogo em si continua byte a byte como era.
 
@@ -45,9 +45,9 @@ caminho padrão.
 1. **Uso pretendido:** backup e preservação dos **seus próprios discos** e
    execução de **homebrew**.
 2. A ferramenta **não distribui conteúdo protegido**: inclui apenas componentes
-   open-source e um bloco estrutural. Ela **não** faz *ripping* nem download de
+   open-source e um bloco estrutural. Ela **não** faz _ripping_ nem download de
    jogos.
-3. A legalidade de backup e *format-shifting* **varia por jurisdição** — use
+3. A legalidade de backup e _format-shifting_ **varia por jurisdição** — use
    apenas onde for permitido pela sua lei local.
 4. **Você é o único responsável** pelo uso da ferramenta.
 5. **Não há garantia de compatibilidade.** O resultado depende do modelo,
@@ -73,8 +73,8 @@ Por sistema operacional:
   `sudo apt install python3-tk` (Debian/Ubuntu), `sudo dnf install python3-tkinter`
   (Fedora) ou `sudo pacman -S tk` (Arch).
 - **Windows:** Python 3.9+ do
-  [python.org](https://www.python.org/downloads/windows/) (marque *tcl/tk and
-  IDLE*); a GUI já vem com o Tk no instalador oficial.
+  [python.org](https://www.python.org/downloads/windows/) (marque _tcl/tk and
+  IDLE_); a GUI já vem com o Tk no instalador oficial.
 
 Detalhes e a matriz completa em [`docs/04-portabilidade.md`](docs/04-portabilidade.md).
 
@@ -199,7 +199,7 @@ A GUI detecta a pasta de override automaticamente.
 
 1. backup do LBA 34 → 14 e do LBA 50 → 15;
 2. `bytes[188..190]` dos descritores dos LBAs 34 e 50 ← LBA 128;
-3. recálculo do **CRC-16/XMODEM** (bytes 8–9) e do *checksum* do *tag* UDF
+3. recálculo do **CRC-16/XMODEM** (bytes 8–9) e do _checksum_ do _tag_ UDF
    (byte 4);
 4. escrita de **24 576 bytes** (12 setores) de estrutura DVD-Video no LBA 128.
 
@@ -212,7 +212,7 @@ e [`docs/adr/0002-alvo-do-patch-e-udf.md`](docs/adr/0002-alvo-do-patch-e-udf.md)
 ### Overlay de boot direto (FreeDVDBoot)
 
 Numa passada sobre a imagem: ESR patch → renomeia `VIDEO_TS.BUP` →
-`VTS_01_0.IFO` → ajusta os *short_ad* → grava os 3 arquivos em
+`VTS_01_0.IFO` → ajusta os _short_ad_ → grava os 3 arquivos em
 `0x45000`/`0x48800`/`0x4B800` (LBAs 138/145/151).
 
 ### Arquitetura
