@@ -1,3 +1,5 @@
+![EDP](src/edp/assets/icons/edp_128.png)
+
 # EDP — ESR Disc Patcher
 
 [![Licença: GPL-3.0-or-later](https://img.shields.io/badge/licen%C3%A7a-GPL--3.0--or--later-blue)](LICENSE)
