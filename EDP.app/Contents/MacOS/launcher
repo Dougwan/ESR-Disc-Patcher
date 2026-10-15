@@ -1,0 +1,21 @@
+#!/bin/sh
+# EDP.app - bundle macOS NAO autonomo.
+#
+# Ele executa o interpretador embutido (Contents/MacOS/EDP, copia de um Python
+# com Tk >= 8.6) e depende do codigo-fonte em "$ROOT/src". Por isso o .app
+# precisa ficar na RAIZ do repositorio (EDP.app/../.. = repositorio).
+# Detalhes em .notebook/gui.md.
+HERE="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$HERE/../../.." && pwd)"
+
+if [ ! -d "$ROOT/src/edp" ]; then
+  MSG="EDP.app precisa ficar na raiz do repositorio (pasta src nao encontrada em: $ROOT/src)."
+  echo "edp: $MSG" >&2
+  if command -v osascript >/dev/null 2>&1; then
+    osascript -e "display alert \"EDP\" message \"$MSG\" as critical" >/dev/null 2>&1
+  fi
+  exit 1
+fi
+
+export PYTHONPATH="$ROOT/src"
+exec "$HERE/EDP" -m edp.gui
