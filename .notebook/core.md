@@ -135,5 +135,28 @@ Lógica portável coberta em `tests/test_portability.py` (20 testes):
 - **[resolvido]** helper de nome de saída agora único em `src/edp/paths.py`
   (`default_output_path`), usado por `cli.py` e `gui/app.py` (fim da duplicação).
 - `PatchReport` carrega campos sem consumidor interno; reduzir é decisão de API.
-- Teste em hardware real (console + mídia) é a única validação definitiva do
-  boot; fora do alcance da suíte determinística.
+- **[resolvido] Teste em hardware real**: boot confirmado em console stock em
+  2026-10-17 — ver "Validação em hardware real" abaixo.
+
+## Validação em hardware real (2026-10-17)
+
+Primeiro boot confirmado em **console real** (PS2 stock, `English`, sem modchip):
+discos gerados por `edp fdvdb` (ESR + FreeDVDBoot, loader embutido `dccbaaee`)
+**bootaram os jogos**.
+
+- **Discos de teste**: `Way of the Samurai 2 ..._fdvdb.iso` (1,43 GiB) e
+  `Max Payne (Brazil)_fdvdb.iso` (2,73 GiB), gravados em DVD-R a **4x**,
+  finalizados e verificados.
+- **Disco de controle** (já funcional, não gerado por nós): DVD-R de ICO
+  (`SCUS_974.72`) — a região de payload **LBA 128–161 é byte-idêntica** à nossa
+  saída, loader `dccbaaee` inclusive → prova que payload/loader do pacote são
+  válidos.
+- **Causa raiz das falhas anteriores**: **gravação ruim** (gravador USB
+  `hp UJ8E1` caindo por energia), **não** o EDP. O GH3 (4,03 GiB) falhou com
+  gravações interrompidas; os ISOs analisam como `patched`/`SLUS_216.72`.
+- **Mapa do que o EDP altera**: 18 231 bytes em 35 setores, todos em LBA 14–158
+  (14/15 e 34/50 = ESR; 128+ = DVD-Video/overlay FreeDVDBoot; 151–158 = loader
+  ELF). O resto da ISO permanece byte a byte igual ao original.
+
+Fator dominante de falha na prática: **gravação/mídia** (dye barato, gravador
+instável, velocidade alta), não a ferramenta.

@@ -129,6 +129,7 @@ patch_to_new_file(entrada, saida)
   patch ESR e por isso não existe no escopo. Se o objetivo futuro for *criar* um
   disco DVDV-diretos do zero (homebrew), aí sim seria preciso `mkisofs`/`pycdlib`
   — módulo novo, não parte do patch.
-- Teste em hardware real (console + mídia gravada) está fora do alcance deste
-  ambiente e é a única validação definitiva; a suíte cobre toda a lógica
-  determinística.
+- A suíte cobre toda a lógica determinística. A validação definitiva é o **boot
+  em hardware real** — feita manualmente e **confirmada em 2026-10-17** (PS2
+  stock, discos gerados por `edp fdvdb`, mídia DVD-R gravada a 4x). Ver o
+  README, seção "Validação em hardware real".
