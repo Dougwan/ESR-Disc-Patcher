@@ -2,175 +2,177 @@
 
 # EDP — ESR Disc Patcher
 
-[![Licença: GPL-3.0-or-later](https://img.shields.io/badge/licen%C3%A7a-GPL--3.0--or--later-blue)](LICENSE)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue)](LICENSE)
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)
-![Plataformas: macOS | Linux | Windows](https://img.shields.io/badge/plataformas-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
-![Dependências: 0 em runtime](https://img.shields.io/badge/depend%C3%AAncias-0%20em%20runtime-success)
+![Platforms: macOS | Linux | Windows](https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
+![Runtime dependencies: 0](https://img.shields.io/badge/runtime%20deps-0-success)
 ![AI-assisted](https://img.shields.io/badge/AI--assisted-8A2BE2)
 
-Transforme a ISO do seu próprio jogo de PS2 em um disco que o console aceita e
-inicia, sem modchip.
+Turn the ISO of your own PS2 game into a disc the console accepts and boots —
+no modchip required.
 
-**Idiomas:** **Português** · [English](README.en.md)
+**Languages:** [Português](README.pt-BR.md) · **English**
 
 ---
 
-## Início rápido
+## Quick start
 
 ```bash
-# 1) gere a imagem de boot direto (ESR + FreeDVDBoot)
-PYTHONPATH=src python3 -m edp fdvdb jogo.iso          # → jogo_fdvdb.iso
+# 1) build the direct-boot image (ESR + FreeDVDBoot)
+PYTHONPATH=src python3 -m edp fdvdb game.iso          # → game_fdvdb.iso
 
-# 2) grave em DVD-R a 4x, finalizando e verificando (macOS)
-hdiutil burn -speed 4 -forceclose -verifyburn -noaddpmap -nosynth jogo_fdvdb.iso
+# 2) burn to a DVD-R at 4x, finalized and verified (macOS)
+hdiutil burn -speed 4 -forceclose -verifyburn -noaddpmap -nosynth game_fdvdb.iso
 ```
 
-3. Ponha o disco no console e ligue. **Sem modchip.**
+3. Put the disc in the console and power it on. **No modchip.**
 
-> A **gravação** é a etapa que mais dá errado — mídia boa, **4x**, finalizar e
-> verificar. Detalhes em [Gravar o disco](#gravar-o-disco).
+> **Burning** is the step that goes wrong the most — good media, **4x**,
+> finalized and verified. Details in [Burning the disc](#burning-the-disc).
 
-## O que é
+## What it is
 
-O **EDP** aplica (e remove) o **patch ESR** em imagens de disco (ISO) de
-PlayStation 2. O console só aceita mídia gravada se o disco se apresentar como
-algo que o leitor reconheça — e é exatamente isso que o EDP prepara. A
-ferramenta é um utilitário de **backup, preservação e homebrew**: você informa a
-ISO, ela gera uma nova imagem pronta para gravar, e o console a boota pelo
-loader **ESR**.
+**EDP** applies (and removes) the **ESR patch** on PlayStation 2 disc images
+(ISOs). The console only accepts burned media if the disc presents itself as
+something the drive recognizes — and that is exactly what EDP prepares. The
+tool is a **backup, preservation and homebrew** utility: you hand it an ISO, it
+produces a new image ready to burn, and the console boots it through the **ESR**
+loader.
 
-## Como funciona
+## How it works
 
-Pense no disco como um **envelope**. O console não lê o conteúdo: ele
-**inspeciona a etiqueta** do envelope e decide se aceita. O EDP reescreve essa
-etiqueta (os _descritores_ do disco) para que o console o trate como um
-**DVD-Video**, gesto que o leitor reconhece. **O executável do jogo não é
-alterado** — o jogo em si continua byte a byte como era.
+Think of the disc as an **envelope**. The console does not read the contents: it
+**inspects the envelope's label** and decides whether to accept it. EDP rewrites
+that label (the disc _descriptors_) so the console treats it as a
+**DVD-Video**, a gesture the drive recognizes. **The game executable is not
+altered** — the game itself stays byte-for-byte as it was.
 
-Há dois caminhos de boot:
+There are two boot paths:
 
-- **Boot direto (ESR + FreeDVDBoot):** o disco já embute o exploit e o loader;
-  o console inicia **sem modchip e sem instalar nada**. (Requer compatibilidade
-  de hardware — ver abaixo.)
-- **Modo clássico:** o disco é aceito pelo leitor, mas o boot depende de o
-  **loader ESR já estar instalado no console** (por exemplo, via FreeMcBoot).
+- **Direct boot (ESR + FreeDVDBoot):** the disc embeds the exploit and the
+  loader; the console boots **with no modchip and nothing installed**. (Requires
+  hardware compatibility — see below.)
+- **Classic mode:** the disc is accepted by the drive, but booting depends on
+  the **ESR loader already being installed on the console** (for example, via
+  FreeMcBoot).
 
-Por padrão **a ISO original nunca é alterada**: a saída é sempre um arquivo
-novo. Existe um modo destrutivo (`--in-place`), mas ele é opcional e não é o
-caminho padrão.
+By default **the original ISO is never modified**: the output is always a new
+file. There is a destructive mode (`--in-place`), but it is optional and not the
+default path.
 
-## Uso responsável
+## Responsible use
 
-1. **Uso pretendido:** backup e preservação dos **seus próprios discos** e
-   execução de **homebrew**.
-2. A ferramenta **não distribui conteúdo protegido**: embute apenas componentes
-   da cena homebrew (com atribuição — ver *Licença dos binários de terceiros*)
-   e um bloco estrutural. Ela **não** faz _ripping_ nem download de jogos.
-3. A legalidade de backup e _format-shifting_ **varia por jurisdição** — use
-   apenas onde for permitido pela sua lei local.
-4. **Você é o único responsável** pelo uso da ferramenta.
-5. **Não há garantia de compatibilidade.** O resultado depende do modelo,
-   firmware e região do console, e de o loader ESR estar presente (modo
-   clássico) ou de o boot direto ser compatível com o seu aparelho.
+1. **Intended use:** backup and preservation of **your own discs** and running
+   **homebrew**.
+2. The tool **does not distribute protected content**: it embeds only homebrew
+   scene components (with attribution — see *Third-party binary licenses*) and
+   one structural block. It does **not** rip or download games.
+3. The legality of backup and _format-shifting_ **varies by jurisdiction** — use
+   it only where your local law allows.
+4. **You are solely responsible** for your use of the tool.
+5. **No compatibility guarantee.** The result depends on the console's model,
+   firmware and region, and on the ESR loader being present (classic mode) or on
+   direct boot being compatible with your unit.
 
-## Requisitos
+## Requirements
 
-O EDP roda a partir do **mesmo código-fonte** em macOS, Linux e Windows — **sem
-binário por plataforma** e **sem dependências de runtime** (somente biblioteca
-padrão do Python):
+EDP runs from the **same source** on macOS, Linux and Windows — **no
+per-platform binary** and **no runtime dependencies** (Python standard library
+only):
 
-- **Python 3.9+** (a CLI funciona em qualquer Python 3.9+).
-- A **GUI** exige `tkinter` com **Tk ≥ 8.6**.
+- **Python 3.9+** (the CLI works on any Python 3.9+).
+- The **GUI** requires `tkinter` with **Tk ≥ 8.6**.
 
-Por sistema operacional:
+Per operating system:
 
-- **macOS:** Python 3.9+. O Python do sistema (`/usr/bin/python3`) traz o **Tk
-  8.5** da Apple, quebrado em versões recentes (janela abre vazia) — para a GUI
-  use um interpretador com Tk ≥ 8.6 (`brew install python-tk@3.12` ou o
-  instalador do [python.org](https://www.python.org/)).
-- **Linux:** Python 3.9+. O `tkinter` costuma vir em pacote separado para a GUI:
-  `sudo apt install python3-tk` (Debian/Ubuntu), `sudo dnf install python3-tkinter`
-  (Fedora) ou `sudo pacman -S tk` (Arch).
-- **Windows:** Python 3.9+ do
-  [python.org](https://www.python.org/downloads/windows/) (marque _tcl/tk and
-  IDLE_); a GUI já vem com o Tk no instalador oficial.
+- **macOS:** Python 3.9+. The system Python (`/usr/bin/python3`) ships Apple's
+  **Tk 8.5**, broken on recent versions (the window opens empty) — for the GUI
+  use an interpreter with Tk ≥ 8.6 (`brew install python-tk@3.12` or the
+  [python.org](https://www.python.org/) installer).
+- **Linux:** Python 3.9+. `tkinter` usually comes in a separate package for the
+  GUI: `sudo apt install python3-tk` (Debian/Ubuntu),
+  `sudo dnf install python3-tkinter` (Fedora) or `sudo pacman -S tk` (Arch).
+- **Windows:** Python 3.9+ from
+  [python.org](https://www.python.org/downloads/windows/) (check _tcl/tk and
+  IDLE_); the GUI ships with Tk in the official installer.
 
-Detalhes e a matriz completa em [`docs/04-portabilidade.md`](docs/04-portabilidade.md).
+Details and the full matrix in
+[`docs/04-portabilidade.md`](docs/04-portabilidade.md).
 
-> Os exemplos usam `python3`. No Windows troque por `py -3` (ou `python`) — vale
-> para todos os comandos deste README.
+> Examples use `python3`. On Windows use `py -3` (or `python`) instead — this
+> applies to every command in this README.
 
-## Instalação
+## Installation
 
-Não precisa instalar. Aponte o `PYTHONPATH` para `src` e rode direto do fonte:
+Nothing to install. Point `PYTHONPATH` at `src` and run straight from source:
 
 ```bash
-PYTHONPATH=src python3 -m edp info jogo.iso
+PYTHONPATH=src python3 -m edp info game.iso
 ```
 
-Ou instale, o que cria os comandos `edp` e `edp-gui` no `PATH`:
+Or install it, which creates the `edp` and `edp-gui` commands on your `PATH`:
 
 ```bash
-python3 -m pip install .        # instala; use -e . para modo editável
+python3 -m pip install .        # install; use -e . for editable mode
 ```
 
-## Uso — GUI
+## Usage — GUI
 
-A GUI é a mesma nos três sistemas.
+The GUI is the same on all three systems.
 
-![Interface do EDP](docs/gui.png)
+![EDP interface](docs/gui.png)
 
-Passo a passo:
+Step by step:
 
-1. Inicie a interface (qualquer uma destas formas):
-   - `python3 run-gui.py` — forma direta (macOS / Linux / Windows);
-   - `./run-gui.sh` (macOS / Linux) ou `run-gui.bat` (Windows) — atalhos;
-   - `edp-gui` — se você instalou com `pip install .`.
-2. Clique em **Selecionar...** e escolha a sua ISO. O **diagnóstico** aparece
-   automaticamente (UDF, estado do patch, game ID, região, ELF de boot).
-3. Confira o **arquivo de saída** sugerido (por padrão `<nome>_fdvdb.iso`) e
-   ajuste com **Salvar como...** se quiser.
-4. Clique em **Aplicar patch** e acompanhe a barra de progresso. O botão gera
-   o **disco de boot direto** (ESR + FreeDVDBoot), com os payloads/loader já
-   embutidos — não há nada para configurar.
-5. Ao concluir, a GUI mostra a saída gerada e a reanalisa. A **ISO original é
-   sempre preservada** (a saída é um arquivo novo).
+1. Start the interface (any of these):
+   - `python3 run-gui.py` — direct (macOS / Linux / Windows);
+   - `./run-gui.sh` (macOS / Linux) or `run-gui.bat` (Windows) — shortcuts;
+   - `edp-gui` — if you installed with `pip install .`.
+2. Click **Select...** and choose your ISO. The **diagnosis** appears
+   automatically (UDF, patch state, game ID, region, boot ELF).
+3. Check the suggested **output file** (default `<name>_fdvdb.iso`) and adjust
+   with **Save as...** if you want.
+4. Click **Apply patch** and watch the progress bar. The button produces the
+   **direct-boot disc** (ESR + FreeDVDBoot), with payloads/loader already
+   embedded — nothing to configure.
+5. When done, the GUI shows the generated output and re-analyzes it. The
+   **original ISO is always preserved** (the output is a new file).
 
-Atalhos e interpretador preferido:
+Shortcuts and preferred interpreter:
 
 ```bash
 ./run-gui.sh                                          # macOS / Linux
 run-gui.bat                                           # Windows
-python3 run-gui.py --print                            # só diagnóstico, não abre janela
-EDP_PYTHON=/caminho/python3 ./run-gui.sh              # macOS / Linux (força o interpretador)
-set EDP_PYTHON=C:\caminho\python.exe && run-gui.bat   # Windows (força o interpretador)
+python3 run-gui.py --print                            # diagnosis only, no window
+EDP_PYTHON=/path/to/python3 ./run-gui.sh              # macOS / Linux (force interpreter)
+set EDP_PYTHON=C:\path\python.exe && run-gui.bat      # Windows (force interpreter)
 ```
 
-No **macOS** há ainda o bundle `EDP.app/`, uma conveniência para abrir a GUI
-pelo Finder/Dock. Ele **não é autônomo nem portátil** e precisa ficar na raiz do
-repositório — detalhes em
+On **macOS** there is also the `EDP.app/` bundle, a convenience to open the GUI
+from Finder/Dock. It is **not self-contained or portable** and must stay at the
+repository root — details in
 [`docs/04-portabilidade.md`](docs/04-portabilidade.md).
 
-## Uso — CLI
+## Usage — CLI
 
 ```bash
-# Inspeciona a imagem sem alterá-la (UDF, estado do patch, game id, ELF)
-PYTHONPATH=src python3 -m edp info jogo.iso
+# Inspect the image without changing it (UDF, patch state, game id, ELF)
+PYTHONPATH=src python3 -m edp info game.iso
 
-# Aplica o patch ESR gerando uma nova ISO (preserva a original) — padrão
-PYTHONPATH=src python3 -m edp patch jogo.iso -o jogo_esr.iso
+# Apply the ESR patch, producing a new ISO (the original is preserved) — default
+PYTHONPATH=src python3 -m edp patch game.iso -o game_esr.iso
 
-# Gera o disco de boot direto (ESR + FreeDVDBoot)
-PYTHONPATH=src python3 -m edp fdvdb jogo.iso -o jogo_fdvdb.iso
+# Build the direct-boot disc (ESR + FreeDVDBoot)
+PYTHONPATH=src python3 -m edp fdvdb game.iso -o game_fdvdb.iso
 
-# Remove o patch ESR (reversão — só na CLI; ver nota abaixo)
-PYTHONPATH=src python3 -m edp unpatch jogo_esr.iso -o jogo_original.iso
+# Remove the ESR patch (revert — CLI only; see the note below)
+PYTHONPATH=src python3 -m edp unpatch game_esr.iso -o game_original.iso
 ```
 
-Exemplo de diagnóstico (`info` antes e depois do patch):
+Example diagnosis (`info` before and after patching):
 
 ```console
-$ PYTHONPATH=src python3 -m edp info jogo.iso
+$ PYTHONPATH=src python3 -m edp info game.iso
 Imagem:            4334649344 bytes (4133.8 MiB)
 UDF:               sim (NSR02 @ setor 19)
 Estado do patch:   clean
@@ -180,8 +182,8 @@ Regiao:            NTSC-U
 Boot executable:   SLUS_216.72
 ELF:               32-bit=True, LE=True, MIPS=True, entry=0x103D08
 
-$ PYTHONPATH=src python3 -m edp fdvdb jogo.iso
-$ PYTHONPATH=src python3 -m edp info jogo_fdvdb.iso
+$ PYTHONPATH=src python3 -m edp fdvdb game.iso
+$ PYTHONPATH=src python3 -m edp info game_fdvdb.iso
 Imagem:            4334649344 bytes (4133.8 MiB)
 UDF:               sim (NSR02 @ setor 19)
 Estado do patch:   patched
@@ -192,213 +194,214 @@ Boot executable:   SLUS_216.72
 ELF:               32-bit=True, LE=True, MIPS=True, entry=0x103D08
 ```
 
-Saídas padrão quando `-o` é omitido: `patch` → `<nome>_esr.iso`, `fdvdb` →
-`<nome>_fdvdb.iso`, `unpatch` → `<nome>_unpatched.iso`. `patch` e `unpatch`
-aceitam `--in-place` (destrutivo, altera o próprio arquivo) e todos aceitam
-`--overwrite` (sobrescreve a saída existente).
+Default outputs when `-o` is omitted: `patch` → `<name>_esr.iso`, `fdvdb` →
+`<name>_fdvdb.iso`, `unpatch` → `<name>_unpatched.iso`. `patch` and `unpatch`
+accept `--in-place` (destructive, modifies the file itself) and all accept
+`--overwrite` (overwrites an existing output).
 
-> **Sobre `unpatch`:** ele desfaz o **patch ESR** (restaura os descritores e
-> zera a área DVD-Video) — reversão perfeita em ISOs só-ESR. Ele **não** remove
-> o overlay **FreeDVDBoot** (os payloads em LBA 138/145/151 permanecem). Por
-> isso existe **só na CLI**: a GUI sempre gera um arquivo novo e preserva a
-> original, tornando o unpatch desnecessário lá.
+> **About `unpatch`:** it undoes the **ESR patch** (restores the descriptors and
+> clears the DVD-Video area) — a perfect revert on ESR-only ISOs. It does **not**
+> remove the **FreeDVDBoot** overlay (the payloads at LBA 138/145/151 remain).
+> That is why it exists **on the CLI only**: the GUI always produces a new file
+> and preserves the original, making unpatch unnecessary there.
 
-## Boot direto (FreeDVDBoot + ESR)
+## Direct boot (FreeDVDBoot + ESR)
 
-Além do patch ESR clássico — que depende do loader ESR no console —, o EDP gera
-um disco **auto-bootável** combinando o ESR com o exploit **FreeDVDBoot**. O
-disco gravado boota num PS2 **sem modchip e sem nada instalado**, sujeito à
-compatibilidade do exploit.
+Beyond the classic ESR patch — which depends on the ESR loader on the console —
+EDP produces a **self-booting** disc combining ESR with the **FreeDVDBoot**
+exploit. The burned disc boots on a PS2 **with no modchip and nothing
+installed**, subject to the exploit's compatibility.
 
-Requisitos do exploit (não da ferramenta):
+Exploit requirements (not the tool's):
 
-- **Slim** → qualquer um (payload híbrido 3.10/3.11); **Phat** → apenas 2.10,
-  2.12 e 3.04;
-- console configurado em **English**.
+- **Slim** → any (hybrid 3.10/3.11 payload); **Phat** → only 2.10, 2.12 and
+  3.04;
+- console set to **English**.
 
 ```bash
-PYTHONPATH=src python3 -m edp fdvdb jogo.iso -o jogo_fdvdb.iso
+PYTHONPATH=src python3 -m edp fdvdb game.iso -o game_fdvdb.iso
 ```
 
-Os payloads/loader usados são os **embutidos no pacote**. Para usar outros (por
-exemplo, o firmware de **Phat** 2.10/2.12/3.04), a CLI aceita as flags
-`--video-ts-ifo`, `--vts-01-0-ifo` e `--loader`, ou uma pasta de override
-(`EDP_FDVDB_DIR` ou `payloads/` ao lado do projeto); os embutidos são o padrão.
-A GUI detecta a pasta de override automaticamente.
+The payloads/loader used are the ones **embedded in the package**. To use others
+(for example, the **Phat** 2.10/2.12/3.04 firmware), the CLI accepts the
+`--video-ts-ifo`, `--vts-01-0-ifo` and `--loader` flags, or an override folder
+(`EDP_FDVDB_DIR` or `payloads/` next to the project); the embedded ones are the
+default. The GUI detects the override folder automatically.
 
-## Gravar o disco
+## Burning the disc
 
-O EDP entrega uma **ISO pronta**; gravar é o passo final — e **o que mais dá
-errado**. Regra de ouro: **mídia boa, 4x, disco finalizado, com verificação**.
+EDP hands you a **ready ISO**; burning is the final step — and **the one that
+goes wrong the most**. Golden rule: **good media, 4x, disc finalized, with
+verification**.
 
-| Sistema | Como gravar |
+| System | How to burn |
 |---|---|
-| **macOS** | `hdiutil burn -speed 4 -forceclose -verifyburn -noaddpmap -nosynth "imagem.iso"` |
-| **Linux** | `growisofs -dvd-compat -speed=4 -Z /dev/sr0="imagem.iso"` (ou `xorriso`, K3b, Brasero) |
-| **Windows** | **ImgBurn** (_Write image file to disc_) ou o nativo "Gravar imagem de disco" |
+| **macOS** | `hdiutil burn -speed 4 -forceclose -verifyburn -noaddpmap -nosynth "image.iso"` |
+| **Linux** | `growisofs -dvd-compat -speed=4 -Z /dev/sr0="image.iso"` (or `xorriso`, K3b, Brasero) |
+| **Windows** | **ImgBurn** (_Write image file to disc_) or the built-in "Burn disc image" |
 
-Use **DVD-R** (não CD): o leitor do PS2 lê DVD. No macOS, `-noaddpmap -nosynth`
-mandam gravar os bytes **como estão** — essencial, porque o boot depende do
-layout exato dos primeiros setores; `-forceclose` **finaliza** o disco.
+Use **DVD-R** (not CD): the PS2 drive reads DVD. On macOS, `-noaddpmap -nosynth`
+tell it to burn the bytes **as they are** — essential, because booting depends on
+the exact layout of the first sectors; `-forceclose` **finalizes** the disc.
 
-O que costuma dar errado:
+What usually goes wrong:
 
-- **Disco "aberto" (não finalizado)** → não boota. **Finalize** a sessão.
-- **Mídia barata / velocidade alta** → tela preta. Use mídia de marca a **4x**.
-- **Gravador USB instável** → a gravação falha ou o disco sai ejetado. Regrave.
+- **Disc left "open" (not finalized)** → no boot. **Finalize** the session.
+- **Cheap media / high speed** → black screen. Use brand media at **4x**.
+- **Unstable USB burner** → the burn fails or the disc comes out ejected.
+  Reburn.
 
-## Validação em hardware real
+## Real hardware validation
 
-A saída foi **confirmada em console real**: em **2026-10-17**, discos gerados
-com `edp fdvdb` **bootaram** num PS2 **stock, sem modchip e sem nada instalado**
-(console em `English`). Isso bate com a geometria do exploit — o EDP altera só
-os primeiros ~0,3 MB (LBAs 14–158) e o resto da ISO fica **byte a byte** igual
-ao original.
+The output has been **confirmed on a real console**: on **2026-10-17**, discs
+produced with `edp fdvdb` **booted** on a **stock PS2, with no modchip and
+nothing installed** (console set to `English`). This matches the exploit's
+geometry — EDP touches only the first ~0.3 MB (LBAs 14–158) and the rest of the
+ISO stays **byte-for-byte** identical to the original.
 
-> Se um disco não bootar, **na maioria dos casos não é a ferramenta** — é a
-> gravação. Vale regravar (mídia melhor, 4x, verificado) antes de abrir um
-> *issue*.
+> If a disc does not boot, **most of the time it is not the tool** — it is the
+> burn. Reburn (better media, 4x, verified) before opening an *issue*.
 
-## Estado do projeto
+## Project status
 
-- **Versão:** `0.1.0` — estável para uso.
-- **Testes:** 91 automatizados (domínio, ISO, integração) **+ validação em
-  hardware real**.
-- **Suporte:** macOS, Linux e Windows a partir do mesmo código, **sem
-  dependências** de runtime.
-- **Escopo:** o EDP **prepara a imagem**. Não faz _ripping_, não baixa jogos e
-  não instala nada no console.
+- **Version:** `0.1.0` — stable for use.
+- **Tests:** 91 automated (domain, ISO, integration) **+ real-hardware
+  validation**.
+- **Support:** macOS, Linux and Windows from the same code, **no runtime
+  dependencies**.
+- **Scope:** EDP **prepares the image**. It does not rip, does not download
+  games and installs nothing on the console.
 
-## FAQ e limitações
+## FAQ and limitations
 
-- **Gravei, mas o console não boota.** Verifique: a ISO era um jogo PS2
-  ISO9660+UDF válido; no modo clássico, o loader ESR está instalado no console;
-  no boot direto, o seu modelo existe na lista suportada (Phat só 2.10/2.12/3.04)
-  e o console está em **English**.
-- **Passa do boot e trava (tela preta).** Quase sempre é **gravação/mídia**:
-  regrave em mídia boa a 4x, **finalizado** e verificado antes de culpar o
-  patch.
-- **O disco é grande (~4 GB) e não sobe.** A mídia tem ~4,38 GiB; discos quase
-  cheios dependem de o laser ler bem as **trilhas externas**. Regrave em mídia
-  de qualidade e, se persistir, suspeite da mídia/leitor.
-- **Modo clássico x boot direto.** Sem loader no console, use `fdvdb` (boot
-  direto). Com loader ESR já instalado, `patch` basta.
-- **Remoção do patch.** Só o `unpatch` na CLI desfaz o patch ESR; ele não
-  remove o overlay FreeDVDBoot.
-- **Não há garantia de compatibilidade** com todo modelo/firmware/região — não
-  prometemos "funciona em qualquer PS2".
-- **A ISO original é preservada por padrão.** O modo `--in-place` é destrutivo e
-  existe apenas para quem sabe o que está fazendo.
+- **I burned it, but the console won't boot.** Check: the ISO was a valid PS2
+  ISO9660+UDF game; in classic mode, the ESR loader is installed on the console;
+  in direct boot, your model is in the supported list (Phat only 2.10/2.12/3.04)
+  and the console is set to **English**.
+- **It boots past the startup and hangs (black screen).** Almost always a
+  **burn/media** issue: reburn on good media at 4x, **finalized** and verified,
+  before blaming the patch.
+- **The disc is large (~4 GB) and won't load.** Media holds ~4.38 GiB; nearly
+  full discs rely on the laser reading the **outer tracks** well. Reburn on
+  quality media and, if it persists, suspect the media/drive.
+- **Classic mode vs. direct boot.** No loader on the console? Use `fdvdb`
+  (direct boot). ESR loader already installed? `patch` is enough.
+- **Removing the patch.** Only `unpatch` on the CLI undoes the ESR patch; it
+  does not remove the FreeDVDBoot overlay.
+- **No compatibility guarantee** across every model/firmware/region — we don't
+  promise "works on any PS2".
+- **The original ISO is preserved by default.** `--in-place` is destructive and
+  exists only for those who know what they are doing.
 
-## Referência técnica
+## Technical reference
 
-### Algoritmo do patch (ESR)
+### The patch algorithm (ESR)
 
-1. backup do LBA 34 → 14 e do LBA 50 → 15;
-2. `bytes[188..190]` dos descritores dos LBAs 34 e 50 ← LBA 128;
-3. recálculo do **CRC-16/XMODEM** (bytes 8–9) e do _checksum_ do _tag_ UDF
+1. back up LBA 34 → 14 and LBA 50 → 15;
+2. `bytes[188..190]` of the descriptors at LBAs 34 and 50 ← LBA 128;
+3. recompute the **CRC-16/XMODEM** (bytes 8–9) and the UDF _tag_ checksum
    (byte 4);
-4. escrita de **24 576 bytes** (12 setores) de estrutura DVD-Video no LBA 128.
+4. write **24,576 bytes** (12 sectors) of DVD-Video structure at LBA 128.
 
-Marca de "já patchado": `+NSR` em `LBA 14 * 2048 + 25`. Toda a região manipulada
-fica nos primeiros ~288 KB (`128 * 2048 + 24576 = 286 720`), então o patch é
-O(1) — não é preciso carregar os GB da ISO. O ELF do jogo e o `SYSTEM.CNF`
-permanecem intactos. Ver [`docs/01-analise-do-problema.md`](docs/01-analise-do-problema.md)
-e [`docs/adr/0002-alvo-do-patch-e-udf.md`](docs/adr/0002-alvo-do-patch-e-udf.md).
+"Already patched" marker: `+NSR` at `LBA 14 * 2048 + 25`. The whole region
+touched is in the first ~288 KB (`128 * 2048 + 24576 = 286,720`), so the patch
+is O(1) — no need to load the ISO's GBs. The game ELF and `SYSTEM.CNF` stay
+intact. See [`docs/01-analise-do-problema.md`](docs/01-analise-do-problema.md)
+and [`docs/adr/0002-alvo-do-patch-e-udf.md`](docs/adr/0002-alvo-do-patch-e-udf.md).
 
-### Overlay de boot direto (FreeDVDBoot)
+### Direct-boot overlay (FreeDVDBoot)
 
-Numa passada sobre a imagem: ESR patch → renomeia `VIDEO_TS.BUP` →
-`VTS_01_0.IFO` → ajusta os _short_ad_ → grava os 3 arquivos em
+In one pass over the image: ESR patch → rename `VIDEO_TS.BUP` →
+`VTS_01_0.IFO` → adjust the _short_ad_ → write the 3 files at
 `0x45000`/`0x48800`/`0x4B800` (LBAs 138/145/151).
 
-### Arquitetura
+### Architecture
 
 ```
 domain  → crc, elf, system_cnf, models, errors, constants, gameid
 iso     → device (Protocol/File/Memory), udf, iso9660, inspector
 patcher → descriptor, dvd_data, engine, service
-cli/gui → apresentação sobre o service
+cli/gui → presentation over the service
 ```
 
-A dependência aponta sempre para baixo; o `service` orquestra cópia e
-progresso e é a única porta usada por CLI e GUI. Ver
-[`docs/03-arquitetura.md`](docs/03-arquitetura.md) e as decisões registradas em
+Dependencies always point downward; the `service` orchestrates copy and
+progress and is the only port used by CLI and GUI. See
+[`docs/03-arquitetura.md`](docs/03-arquitetura.md) and the decisions recorded in
 `docs/adr/0001..0004`.
 
-### Testes
+### Tests
 
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests -t . -v
 ```
 
-Cobrem o domínio (CRC, ELF, `SYSTEM.CNF`), a camada ISO (UDF, ISO9660), a
-transformação do descritor e um fluxo de integração completo
-(`analyze → patch → analyze → unpatch`) sobre uma ISO sintética. A validação
-definitiva em hardware real é feita manualmente e **já foi confirmada** — ver
-[Validação em hardware real](#validação-em-hardware-real).
+They cover the domain (CRC, ELF, `SYSTEM.CNF`), the ISO layer (UDF, ISO9660),
+the descriptor transform and a full integration flow
+(`analyze → patch → analyze → unpatch`) over a synthetic ISO. The definitive
+validation on real hardware is done manually and **has already been confirmed**
+— see [Real hardware validation](#real-hardware-validation).
 
-### Procedência dos assets
+### Asset provenance
 
-Bloco de estrutura DVD-Video embutido no pacote:
+DVD-Video structure block embedded in the package:
 
-- `src/edp/assets/dvd_video_data.bin` — 24 576 bytes, SHA-256
+- `src/edp/assets/dvd_video_data.bin` — 24,576 bytes, SHA-256
   `d61083e8bc90a959c21958e46216a8531c2095c2f6f780b779d9489f3fd5a845`.
 
-Payloads/loader de FreeDVDBoot (`src/edp/assets/fdvdb/`, extraídos de
+FreeDVDBoot payloads/loader (`src/edp/assets/fdvdb/`, extracted from
 `FDVDB_ESR_Patcher_v0.4` / "FreeDVDBoot Auto Patcher"):
 
-- `payload_VIDEO_TS.IFO` — 14 336 bytes, SHA-256
+- `payload_VIDEO_TS.IFO` — 14,336 bytes, SHA-256
   `e4a41769d71989ca40b4c64a79cf8c5b6b695cb1779af71cd2978f00329f37d6`
-  (exploit recompilado com `LOAD_FROM_SECTOR_RELATIVE_TO_VIDEO_TS_IFO`,
-  diferente do do repositório do CTurt);
-- `payload_VTS_01_0.IFO` — 12 288 bytes, SHA-256
+  (exploit recompiled with `LOAD_FROM_SECTOR_RELATIVE_TO_VIDEO_TS_IFO`, different
+  from CTurt's repository);
+- `payload_VTS_01_0.IFO` — 12,288 bytes, SHA-256
   `c26206e1e4f4405855495037eb725a9be0bb964d2d163fd712edd30e626fd3c0`;
-- `esr.elf` — 14 921 bytes, SHA-256
+- `esr.elf` — 14,921 bytes, SHA-256
   `dccbaaee464ced9bbd62f25db7c4e02b549be6f4e7705fddb5ff970ba1403fa4`
-  (loader ESR de ffgriever, ELF PS2 válido).
+  (ffgriever's ESR loader, a valid PS2 ELF).
 
-Todos versionados no repositório para garantir reprodutibilidade.
+All versioned in the repository for reproducibility.
 
-**Licença dos binários de terceiros.** Estes blobs vêm de projetos da cena e
-são redistribuídos **com atribuição**, para reprodutibilidade:
+**Third-party binary licenses.** These blobs come from scene projects and are
+redistributed **with attribution**, for reproducibility:
 
-- **FreeDVDBoot** (CTurt) — os payloads do exploit. O projeto upstream **não
-  declara licença explícita**; se você precisa de clareza jurídica, use a pasta
-  de override (`--loader` / `--video-ts-ifo` / `--vts-01-0-ifo` ou
-  `EDP_FDVDB_DIR`) e forneça os payloads por conta própria.
-- **ESR** (ffgriever) e **esr patch** (bootsector) — a lógica do patch e o
-  loader ESR. Freeware da cena, sem licença formal.
-- `dvd_video_data.bin` — bloco estrutural de DVD-Video usado pelos patchers de
-  ESR, para o disco se apresentar como DVDV.
+- **FreeDVDBoot** (CTurt) — the exploit payloads. The upstream project
+  **declares no explicit license**; if you need legal clarity, use the override
+  folder (`--loader` / `--video-ts-ifo` / `--vts-01-0-ifo` or `EDP_FDVDB_DIR`)
+  and supply the payloads yourself.
+- **ESR** (ffgriever) and **esr patch** (bootsector) — the patch logic and the
+  ESR loader. Scene freeware, with no formal license.
+- `dvd_video_data.bin` — DVD-Video structural block used by ESR patchers so the
+  disc presents itself as DVDV.
 
-O **código do EDP** é GPL-3.0-or-later; as ressalvas acima valem só para os
-binários redistribuídos.
+The **EDP code itself** is GPL-3.0-or-later; the caveats above apply only to the
+redistributed binaries.
 
-### Ícone
+### Icon
 
-`src/edp/assets/icons/` — a **face de dados** do disco (a parte cinza que o
-laser lê), em pixel art grayscale (grade 32×32, contorno preto, brilho diagonal
-e hub com furo central): `icon.svg` (vetorial, para edição),
-`edp_16/32/128/256/512/1024.png` (com alpha; o de 128 é o usado no `iconphoto`
-da GUI), `edp.ico` (Windows) e `edp.icns` (macOS). Desenhado pelo projeto
-(GPL-3.0); não usa logotipo/marca PlayStation.
+`src/edp/assets/icons/` — the disc's **data side** (the gray part the laser
+reads), in grayscale pixel art (32×32 grid, black outline, diagonal sheen and a
+hub with a center hole): `icon.svg` (vector, for editing),
+`edp_16/32/128/256/512/1024.png` (with alpha; the 128 one is used by the GUI's
+`iconphoto`), `edp.ico` (Windows) and `edp.icns` (macOS). Drawn by the project
+(GPL-3.0); it uses no PlayStation logo/trademark.
 
-A GUI aplica o ícone por sistema: **Windows** usa `edp.ico` via `iconbitmap`;
-**macOS/Linux** usam `edp_128.png` via `iconphoto`; se algum asset faltar, a GUI
-abre normalmente (o ícone é cosmético). No macOS o ícone do Dock/Finder vem do
-bundle `EDP.app/`. Ver `src/edp/gui/app.py` e
+The GUI applies the icon per system: **Windows** uses `edp.ico` via
+`iconbitmap`; **macOS/Linux** use `edp_128.png` via `iconphoto`; if any asset is
+missing, the GUI still opens normally (the icon is cosmetic). On macOS the
+Dock/Finder icon comes from the `EDP.app/` bundle. See `src/edp/gui/app.py` and
 [`docs/04-portabilidade.md`](docs/04-portabilidade.md).
 
-## Contribuindo
+## Contributing
 
-Sugestões, correções e *issues* são bem-vindas — veja
+Suggestions, fixes and *issues* are welcome — see
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-## Créditos e licença
+## Credits and license
 
-Distribuído sob a **[GPL-3.0-or-later](LICENSE)**.
+Distributed under the **[GPL-3.0-or-later](LICENSE)**.
 
-Ideia e patch ESR inspirados nas ferramentas open-source de referência da cena
-PS2: **ffgriever** (ESR), **bootsector** (esr patch), **CTurt** (FreeDVDBoot),
-**ali-raheem** (esrtool) e **James Pelster** (OpenESRDiscPatcher).
+Idea and ESR patch inspired by the reference open-source PS2 scene tools:
+**ffgriever** (ESR), **bootsector** (esr patch), **CTurt** (FreeDVDBoot),
+**ali-raheem** (esrtool) and **James Pelster** (OpenESRDiscPatcher).

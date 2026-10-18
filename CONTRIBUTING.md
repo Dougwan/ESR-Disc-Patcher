@@ -14,8 +14,8 @@ reportar, confira:
 - o modelo é compatível com o boot direto? (Slim: qualquer; Phat: 2.10/2.12/3.04)
 - no modo clássico, o **loader ESR está instalado** no console?
 
-Detalhes no [FAQ do README](README.md#faq-e-limitações) e na seção
-[Gravar o disco](README.md#gravar-o-disco).
+Detalhes no [FAQ do README](README.pt-BR.md#faq-e-limitações) e na seção
+[Gravar o disco](README.pt-BR.md#gravar-o-disco).
 
 ## Ambiente de desenvolvimento
 

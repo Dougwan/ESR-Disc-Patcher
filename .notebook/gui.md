@@ -1,7 +1,8 @@
 # Notebook — GUI e empacotamento (edp)
 
 Notas operacionais reutilizáveis sobre a camada de apresentação e o bundle.
-Escopo: `src/edp/gui/**`, `run-gui.sh`, `EDP.app/**`, `pyproject.toml`, `README.md`.
+Escopo: `src/edp/gui/**`, `run-gui.sh`, `EDP.app/**`, `pyproject.toml`, `README.md`
+(EN), `README.pt-BR.md`.
 
 ## Regra de ouro
 
