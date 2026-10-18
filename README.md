@@ -11,7 +11,24 @@
 Transforme a ISO do seu próprio jogo de PS2 em um disco que o console aceita e
 inicia, sem modchip.
 
+**Idiomas:** **Português** · [English](README.en.md)
+
 ---
+
+## Início rápido
+
+```bash
+# 1) gere a imagem de boot direto (ESR + FreeDVDBoot)
+PYTHONPATH=src python3 -m edp fdvdb jogo.iso          # → jogo_fdvdb.iso
+
+# 2) grave em DVD-R a 4x, finalizando e verificando (macOS)
+hdiutil burn -speed 4 -forceclose -verifyburn -noaddpmap -nosynth jogo_fdvdb.iso
+```
+
+3. Ponha o disco no console e ligue. **Sem modchip.**
+
+> A **gravação** é a etapa que mais dá errado — mídia boa, **4x**, finalizar e
+> verificar. Detalhes em [Gravar o disco](#gravar-o-disco).
 
 ## O que é
 
@@ -46,9 +63,9 @@ caminho padrão.
 
 1. **Uso pretendido:** backup e preservação dos **seus próprios discos** e
    execução de **homebrew**.
-2. A ferramenta **não distribui conteúdo protegido**: inclui apenas componentes
-   open-source e um bloco estrutural. Ela **não** faz _ripping_ nem download de
-   jogos.
+2. A ferramenta **não distribui conteúdo protegido**: embute apenas componentes
+   da cena homebrew (com atribuição — ver *Licença dos binários de terceiros*)
+   e um bloco estrutural. Ela **não** faz _ripping_ nem download de jogos.
 3. A legalidade de backup e _format-shifting_ **varia por jurisdição** — use
    apenas onde for permitido pela sua lei local.
 4. **Você é o único responsável** pelo uso da ferramenta.
@@ -99,7 +116,11 @@ python3 -m pip install .        # instala; use -e . para modo editável
 
 ## Uso — GUI
 
-A GUI é a mesma nos três sistemas. Passo a passo:
+A GUI é a mesma nos três sistemas.
+
+![Interface do EDP](docs/gui.png)
+
+Passo a passo:
 
 1. Inicie a interface (qualquer uma destas formas):
    - `python3 run-gui.py` — forma direta (macOS / Linux / Windows);
@@ -146,6 +167,31 @@ PYTHONPATH=src python3 -m edp fdvdb jogo.iso -o jogo_fdvdb.iso
 PYTHONPATH=src python3 -m edp unpatch jogo_esr.iso -o jogo_original.iso
 ```
 
+Exemplo de diagnóstico (`info` antes e depois do patch):
+
+```console
+$ PYTHONPATH=src python3 -m edp info jogo.iso
+Imagem:            4334649344 bytes (4133.8 MiB)
+UDF:               sim (NSR02 @ setor 19)
+Estado do patch:   clean
+Volume ID:         GH3C
+Game ID:           SLUS_216.72
+Regiao:            NTSC-U
+Boot executable:   SLUS_216.72
+ELF:               32-bit=True, LE=True, MIPS=True, entry=0x103D08
+
+$ PYTHONPATH=src python3 -m edp fdvdb jogo.iso
+$ PYTHONPATH=src python3 -m edp info jogo_fdvdb.iso
+Imagem:            4334649344 bytes (4133.8 MiB)
+UDF:               sim (NSR02 @ setor 19)
+Estado do patch:   patched
+Volume ID:         GH3C
+Game ID:           SLUS_216.72
+Regiao:            NTSC-U
+Boot executable:   SLUS_216.72
+ELF:               32-bit=True, LE=True, MIPS=True, entry=0x103D08
+```
+
 Saídas padrão quando `-o` é omitido: `patch` → `<nome>_esr.iso`, `fdvdb` →
 `<nome>_fdvdb.iso`, `unpatch` → `<nome>_unpatched.iso`. `patch` e `unpatch`
 aceitam `--in-place` (destrutivo, altera o próprio arquivo) e todos aceitam
@@ -180,12 +226,61 @@ exemplo, o firmware de **Phat** 2.10/2.12/3.04), a CLI aceita as flags
 (`EDP_FDVDB_DIR` ou `payloads/` ao lado do projeto); os embutidos são o padrão.
 A GUI detecta a pasta de override automaticamente.
 
+## Gravar o disco
+
+O EDP entrega uma **ISO pronta**; gravar é o passo final — e **o que mais dá
+errado**. Regra de ouro: **mídia boa, 4x, disco finalizado, com verificação**.
+
+| Sistema | Como gravar |
+|---|---|
+| **macOS** | `hdiutil burn -speed 4 -forceclose -verifyburn -noaddpmap -nosynth "imagem.iso"` |
+| **Linux** | `growisofs -dvd-compat -speed=4 -Z /dev/sr0="imagem.iso"` (ou `xorriso`, K3b, Brasero) |
+| **Windows** | **ImgBurn** (_Write image file to disc_) ou o nativo "Gravar imagem de disco" |
+
+Use **DVD-R** (não CD): o leitor do PS2 lê DVD. No macOS, `-noaddpmap -nosynth`
+mandam gravar os bytes **como estão** — essencial, porque o boot depende do
+layout exato dos primeiros setores; `-forceclose` **finaliza** o disco.
+
+O que costuma dar errado:
+
+- **Disco "aberto" (não finalizado)** → não boota. **Finalize** a sessão.
+- **Mídia barata / velocidade alta** → tela preta. Use mídia de marca a **4x**.
+- **Gravador USB instável** → a gravação falha ou o disco sai ejetado. Regrave.
+
+## Validação em hardware real
+
+A saída foi **confirmada em console real**: em **2026-10-17**, discos gerados
+com `edp fdvdb` **bootaram** num PS2 **stock, sem modchip e sem nada instalado**
+(console em `English`). Isso bate com a geometria do exploit — o EDP altera só
+os primeiros ~0,3 MB (LBAs 14–158) e o resto da ISO fica **byte a byte** igual
+ao original.
+
+> Se um disco não bootar, **na maioria dos casos não é a ferramenta** — é a
+> gravação. Vale regravar (mídia melhor, 4x, verificado) antes de abrir um
+> *issue*.
+
+## Estado do projeto
+
+- **Versão:** `0.1.0` — estável para uso.
+- **Testes:** 91 automatizados (domínio, ISO, integração) **+ validação em
+  hardware real**.
+- **Suporte:** macOS, Linux e Windows a partir do mesmo código, **sem
+  dependências** de runtime.
+- **Escopo:** o EDP **prepara a imagem**. Não faz _ripping_, não baixa jogos e
+  não instala nada no console.
+
 ## FAQ e limitações
 
 - **Gravei, mas o console não boota.** Verifique: a ISO era um jogo PS2
   ISO9660+UDF válido; no modo clássico, o loader ESR está instalado no console;
   no boot direto, o seu modelo existe na lista suportada (Phat só 2.10/2.12/3.04)
   e o console está em **English**.
+- **Passa do boot e trava (tela preta).** Quase sempre é **gravação/mídia**:
+  regrave em mídia boa a 4x, **finalizado** e verificado antes de culpar o
+  patch.
+- **O disco é grande (~4 GB) e não sobe.** A mídia tem ~4,38 GiB; discos quase
+  cheios dependem de o laser ler bem as **trilhas externas**. Regrave em mídia
+  de qualidade e, se persistir, suspeite da mídia/leitor.
 - **Modo clássico x boot direto.** Sem loader no console, use `fdvdb` (boot
   direto). Com loader ESR já instalado, `patch` basta.
 - **Remoção do patch.** Só o `unpatch` na CLI desfaz o patch ESR; ele não
@@ -240,8 +335,8 @@ PYTHONPATH=src python3 -m unittest discover -s tests -t . -v
 Cobrem o domínio (CRC, ELF, `SYSTEM.CNF`), a camada ISO (UDF, ISO9660), a
 transformação do descritor e um fluxo de integração completo
 (`analyze → patch → analyze → unpatch`) sobre uma ISO sintética. A validação
-definitiva em hardware real (console + mídia gravada) está fora do escopo
-automatizado.
+definitiva em hardware real é feita manualmente e **já foi confirmada** — ver
+[Validação em hardware real](#validação-em-hardware-real).
 
 ### Procedência dos assets
 
@@ -265,6 +360,21 @@ Payloads/loader de FreeDVDBoot (`src/edp/assets/fdvdb/`, extraídos de
 
 Todos versionados no repositório para garantir reprodutibilidade.
 
+**Licença dos binários de terceiros.** Estes blobs vêm de projetos da cena e
+são redistribuídos **com atribuição**, para reprodutibilidade:
+
+- **FreeDVDBoot** (CTurt) — os payloads do exploit. O projeto upstream **não
+  declara licença explícita**; se você precisa de clareza jurídica, use a pasta
+  de override (`--loader` / `--video-ts-ifo` / `--vts-01-0-ifo` ou
+  `EDP_FDVDB_DIR`) e forneça os payloads por conta própria.
+- **ESR** (ffgriever) e **esr patch** (bootsector) — a lógica do patch e o
+  loader ESR. Freeware da cena, sem licença formal.
+- `dvd_video_data.bin` — bloco estrutural de DVD-Video usado pelos patchers de
+  ESR, para o disco se apresentar como DVDV.
+
+O **código do EDP** é GPL-3.0-or-later; as ressalvas acima valem só para os
+binários redistribuídos.
+
 ### Ícone
 
 `src/edp/assets/icons/` — a **face de dados** do disco (a parte cinza que o
@@ -279,6 +389,11 @@ A GUI aplica o ícone por sistema: **Windows** usa `edp.ico` via `iconbitmap`;
 abre normalmente (o ícone é cosmético). No macOS o ícone do Dock/Finder vem do
 bundle `EDP.app/`. Ver `src/edp/gui/app.py` e
 [`docs/04-portabilidade.md`](docs/04-portabilidade.md).
+
+## Contribuindo
+
+Sugestões, correções e *issues* são bem-vindas — veja
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Créditos e licença
 

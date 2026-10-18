@@ -1,0 +1,74 @@
+name: Bug report
+description: Reporte um problema com o EDP
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reportar! Preencha o máximo possível — a maioria dos
+        problemas de boot é de **gravação**, então os campos abaixo ajudam a
+        separar uma coisa da outra.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: O que aconteceu?
+      description: Descreva o comportamento observado e o que você esperava.
+    validations:
+      required: true
+  - type: textarea
+    id: edp-info
+    attributes:
+      label: Saída do `edp info`
+      description: Cole a saída de `python3 -m edp info <sua.iso>`.
+      render: console
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Versão do EDP
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Sistema operacional
+      options:
+        - macOS
+        - Linux
+        - Windows
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Versão do Python (`python3 --version`)
+    validations:
+      required: true
+  - type: dropdown
+    id: console
+    attributes:
+      label: Modelo do console
+      options:
+        - Slim
+        - Phat
+        - Não sei
+    validations:
+      required: true
+  - type: textarea
+    id: burning
+    attributes:
+      label: Como você gravou o disco
+      description: Ferramenta, velocidade, mídia, se finalizou e verificou.
+      placeholder: "hdiutil burn -speed 4 -forceclose -verifyburn ... / DVD-R marca X"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: Confirmações
+      options:
+        - label: Regravei em mídia diferente, a 4x, finalizado e verificado.
+        - label: A ISO original é um jogo PS2 válido (ISO9660+UDF).
