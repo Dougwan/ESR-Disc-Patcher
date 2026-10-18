@@ -13,6 +13,8 @@ inicia, sem modchip.
 
 **Idiomas:** **Português** · [English](README.md)
 
+> 🇬🇧 **Prefer English?** There is a **[full English version of this README](README.md)** — same docs, start to finish.
+
 ---
 
 ## Início rápido

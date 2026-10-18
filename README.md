@@ -11,7 +11,9 @@
 Turn the ISO of your own PS2 game into a disc the console accepts and boots —
 no modchip required.
 
-**Languages:** [Português](README.pt-BR.md) · **English**
+**Languages:** **English** · [Português](README.pt-BR.md)
+
+> 🇧🇷 **Fala português?** Existe uma **[versão completa deste README em português](README.pt-BR.md)** — mesma documentação, do começo ao fim.
 
 ---
 
