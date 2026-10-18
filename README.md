@@ -395,6 +395,23 @@ missing, the GUI still opens normally (the icon is cosmetic). On macOS the
 Dock/Finder icon comes from the `EDP.app/` bundle. See `src/edp/gui/app.py` and
 [`docs/04-portabilidade.md`](docs/04-portabilidade.md).
 
+## Related tools
+
+EDP would not exist without the tools below — if one of them fits your setup
+better, use it:
+
+- **esr patch** (bootsector) — the original ESR patch logic.
+- **ESR** (ffgriever) — the patcher and the loader.
+- **FreeDVDBoot** (CTurt) — the DVD-player exploit the direct boot relies on.
+- **esrtool** (ali-raheem, MIT) — a lean CLI for the ESR patch.
+- **OpenESRDiscPatcher** (James Pelster, GPL-3.0) — a GUI patcher.
+- **FreeDVDBoot Auto Patcher** — a Windows GUI that combines FreeDVDBoot and ESR.
+
+What EDP adds is deliberately small: the same source runs on macOS, Linux and
+Windows with **no runtime dependencies**, ships a **CLI and a GUI**, builds the
+**direct-boot** disc and the **undo** path (`unpatch`). If another tool covers
+your case, that is the right tool for you.
+
 ## Contributing
 
 Suggestions, fixes and *issues* are welcome — see
@@ -404,6 +421,5 @@ Suggestions, fixes and *issues* are welcome — see
 
 Distributed under the **[GPL-3.0-or-later](LICENSE)**.
 
-Idea and ESR patch inspired by the reference open-source PS2 scene tools:
-**ffgriever** (ESR), **bootsector** (esr patch), **CTurt** (FreeDVDBoot),
-**ali-raheem** (esrtool) and **James Pelster** (OpenESRDiscPatcher).
+Idea and ESR patch inspired by the reference PS2 scene tools — the full list and
+attribution are in [Related tools](#related-tools).

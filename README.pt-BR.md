@@ -392,6 +392,25 @@ abre normalmente (o ícone é cosmético). No macOS o ícone do Dock/Finder vem 
 bundle `EDP.app/`. Ver `src/edp/gui/app.py` e
 [`docs/04-portabilidade.md`](docs/04-portabilidade.md).
 
+## Ferramentas relacionadas
+
+O EDP não existiria sem as ferramentas abaixo — se alguma delas encaixa melhor no
+seu caso, use-a:
+
+- **esr patch** (bootsector) — a lógica original do patch ESR.
+- **ESR** (ffgriever) — o patcher e o loader.
+- **FreeDVDBoot** (CTurt) — o exploit do reprodutor de DVD em que o *direct boot*
+  se apoia.
+- **esrtool** (ali-raheem, MIT) — uma CLI enxuta para o patch ESR.
+- **OpenESRDiscPatcher** (James Pelster, GPL-3.0) — um patcher com GUI.
+- **FreeDVDBoot Auto Patcher** — uma GUI para Windows que combina FreeDVDBoot e
+  ESR.
+
+O que o EDP acrescenta é deliberadamente pequeno: a mesma fonte roda em macOS,
+Linux e Windows com **zero dependências** de runtime, entrega **CLI e GUI**, monta
+o disco de **direct boot** e o caminho de **reversão** (`unpatch`). Se outra
+ferramenta cobre o seu caso, é ela a ferramenta certa pra você.
+
 ## Contribuindo
 
 Sugestões, correções e *issues* são bem-vindas — veja
@@ -401,6 +420,6 @@ Sugestões, correções e *issues* são bem-vindas — veja
 
 Distribuído sob a **[GPL-3.0-or-later](LICENSE)**.
 
-Ideia e patch ESR inspirados nas ferramentas open-source de referência da cena
-PS2: **ffgriever** (ESR), **bootsector** (esr patch), **CTurt** (FreeDVDBoot),
-**ali-raheem** (esrtool) e **James Pelster** (OpenESRDiscPatcher).
+Ideia e patch ESR inspirados nas ferramentas de referência da cena PS2 — a lista
+completa e a atribuição estão em
+[Ferramentas relacionadas](#ferramentas-relacionadas).
