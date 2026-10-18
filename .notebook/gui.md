@@ -1,8 +1,8 @@
 # Notebook — GUI e empacotamento (edp)
 
 Notas operacionais reutilizáveis sobre a camada de apresentação e o bundle.
-Escopo: `src/edp/gui/**`, `run-gui.sh`, `EDP.app/**`, `pyproject.toml`, `README.md`
-(EN), `README.pt-BR.md`.
+Escopo: `src/edp/gui/**`, `run-gui.sh`, `pyproject.toml`, `README.md` (EN),
+`README.pt-BR.md`.
 
 ## Regra de ouro
 
@@ -61,21 +61,20 @@ Escopo: `src/edp/gui/**`, `run-gui.sh`, `EDP.app/**`, `pyproject.toml`, `README.
   `_fdvdb.iso` (alinhado ao `edp fdvdb` da CLI). O nome é derivado pelo helper
   único `src/edp/paths.py:default_output_path` (compartilhado com a CLI).
 
-## Bundle macOS (`EDP.app`)
+## Bundle macOS (por que **não** há um `EDP.app` versionado)
 
-- Estrutura: `Contents/{Info.plist, MacOS/{EDP,launcher}, Resources/edp.icns}`.
-  `CFBundleExecutable = launcher` (script sh) que faz `exec "$HERE/EDP" -m edp.gui`.
-- **NÃO é autônomo**: `Contents/MacOS/EDP` é uma **cópia** de um Python do
-  Homebrew (33 KB, thin arm64) que linka o framework em caminho absoluto
-  (`/opt/homebrew/Cellar/python@3.12/...`) via `_Py_BytesMain`. E o `launcher`
-  depende de `<repo>/src` por caminho relativo `EDP.app/../..`.
-  - Consequência: o `.app` **precisa ficar na raiz do repositório**; movido,
-    o launcher avisa (`osascript` alert) e sai. Só roda onde há aquele Python.
-  - `codesign`: **não assinado** → Gatekeeper pode bloquear em outra máquina.
-- `Info.plist` `CFBundleIconFile = edp.icns` (ícone do Dock). `iconphoto` na GUI
-  cobre só a janela/barra de título.
-- Distribuição autônoma exigiria empacotador (PyInstaller) — fora do escopo
-  (ADR-0004, sem dependências de runtime).
+- Houve um `EDP.app` no repo e ele foi **removido** por não se sustentar: não era
+  autônomo. O binário embutido era só um **stub** (`Contents/MacOS/EDP`, 33 KB,
+  thin arm64) que linkava o Python do Homebrew por **caminho absoluto**
+  (`/opt/homebrew/Cellar/python@3.12/3.12.15/...`) — ou seja, dependia da máquina
+  e daquela versão exata. O `launcher` ainda exigia `<repo>/src`.
+- `codesign`: **não assinado** → Gatekeeper bloqueia em outra máquina. E o
+  `Info.plist` declarava o ícone (`edp.icns`) num bundle que não existe mais
+  fora da raiz do repositório.
+- Por isso hoje o caminho no macOS é `run-gui.sh` / `run-gui.py` / `edp-gui`.
+  Um bundle de verdade exigiria empacotador (PyInstaller) — fora do escopo
+  (ADR-0004: sem dependências de runtime).
+- Se quiser recriar o `.app` localmente, ele está no `.gitignore`.
 
 ## Assets e empacotamento
 
@@ -93,7 +92,7 @@ Escopo: `src/edp/gui/**`, `run-gui.sh`, `EDP.app/**`, `pyproject.toml`, `README.
 cd <repo>
 PYTHONPATH=src python3 -m py_compile src/edp/gui/app.py src/edp/gui/__main__.py run-gui.py
 python3 run-gui.py --print            # diagnostico de interpretador/Tk
-bash -n run-gui.sh ; bash -n EDP.app/Contents/MacOS/launcher
+bash -n run-gui.sh
 PYTHONPATH=src python3 -c "import edp.gui.app as g; print(hasattr(g,'EdpApp'))"
 # headless smoke: cria a janela, exercita _set_busy e destroi (sem mainloop)
 ```

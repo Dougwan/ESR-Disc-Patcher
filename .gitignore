@@ -7,3 +7,6 @@ dist/
 venv/
 *.iso
 .DS_Store
+
+# Atalho macOS local: nao portatil e nao versionado (ver .notebook/gui.md)
+EDP.app/

@@ -131,5 +131,6 @@ patch_to_new_file(entrada, saida)
   — módulo novo, não parte do patch.
 - A suíte cobre toda a lógica determinística. A validação definitiva é o **boot
   em hardware real** — feita manualmente e **confirmada em 2026-10-17** (PS2
-  stock, discos gerados por `edp fdvdb`, mídia DVD-R gravada a 4x). Ver
-  `README.pt-BR.md`, seção "Validação em hardware real".
+  stock, discos gerados por `edp fdvdb`, mídia DVD-R gravada a 4x, inclusive um
+  disco de 4,03 GiB quase cheio). Ver `README.pt-BR.md`, seção "Validação em
+  hardware real".

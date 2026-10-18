@@ -144,16 +144,17 @@ Primeiro boot confirmado em **console real** (PS2 stock, `English`, sem modchip)
 discos gerados por `edp fdvdb` (ESR + FreeDVDBoot, loader embutido `dccbaaee`)
 **bootaram os jogos**.
 
-- **Discos de teste**: `Way of the Samurai 2 ..._fdvdb.iso` (1,43 GiB) e
-  `Max Payne (Brazil)_fdvdb.iso` (2,73 GiB), gravados em DVD-R a **4x**,
-  finalizados e verificados.
+- **Discos de teste**: `Way of the Samurai 2 ..._fdvdb.iso` (1,43 GiB),
+  `Max Payne (Brazil)_fdvdb.iso` (2,73 GiB) e `GH3` (4,03 GiB, quase cheio),
+  gravados em DVD-R a **4x**, finalizados e verificados.
 - **Disco de controle** (já funcional, não gerado por nós): DVD-R de ICO
   (`SCUS_974.72`) — a região de payload **LBA 128–161 é byte-idêntica** à nossa
   saída, loader `dccbaaee` inclusive → prova que payload/loader do pacote são
   válidos.
 - **Causa raiz das falhas anteriores**: **gravação ruim** (gravador USB
-  `hp UJ8E1` caindo por energia), **não** o EDP. O GH3 (4,03 GiB) falhou com
-  gravações interrompidas; os ISOs analisam como `patched`/`SLUS_216.72`.
+  `hp UJ8E1` caindo por energia), **não** o EDP. Confirmado depois: o GH3
+  (4,03 GiB) falhava com gravações interrompidas e **bootou** quando gravado de
+  forma confiável; os ISOs analisam como `patched`/`SLUS_216.72`.
 - **Mapa do que o EDP altera**: 18 231 bytes em 35 setores, todos em LBA 14–158
   (14/15 e 34/50 = ESR; 128+ = DVD-Video/overlay FreeDVDBoot; 151–158 = loader
   ELF). O resto da ISO permanece byte a byte igual ao original.

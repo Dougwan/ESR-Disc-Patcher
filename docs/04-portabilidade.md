@@ -52,15 +52,11 @@ Implementado em `src/edp/gui/app.py` (`EdpApp._apply_icon`), tolerante a falha
 
 - **Windows:** `edp.ico` via `iconbitmap` (formato nativo da barra de
   tarefas/Explorer);
-- **macOS / Linux:** `edp_128.png` via `iconphoto`;
-- no **macOS**, o ícone do **Dock/Finder** vem do bundle `EDP.app/` — ver abaixo.
+- **macOS / Linux:** `edp_128.png` via `iconphoto`.
 
-## `EDP.app` — conveniência **somente macOS**
-
-O bundle `EDP.app/` **não é portátil nem autônomo**: executa um Python embutido
-(`Contents/MacOS/EDP`, cópia de um Homebrew) e depende de `<repo>/src`; precisa
-ficar na raiz do repositório e não é assinado. É apenas conveniência para abrir a
-GUI no macOS (Dock/Finder). Linux/Windows usam `run-gui.py` / `run-gui.bat`.
+Não há bundle `.app`: no macOS a GUI é aberta por `run-gui.sh`, `run-gui.py` ou
+pelo comando `edp-gui` instalado. O `edp.icns` (em `assets/icons/`) fica como
+fonte para quem quiser empacotar por conta própria.
 
 ## O que é (e não é) verificado
 

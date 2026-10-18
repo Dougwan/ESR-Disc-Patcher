@@ -150,11 +150,6 @@ EDP_PYTHON=/path/to/python3 ./run-gui.sh              # macOS / Linux (force int
 set EDP_PYTHON=C:\path\python.exe && run-gui.bat      # Windows (force interpreter)
 ```
 
-On **macOS** there is also the `EDP.app/` bundle, a convenience to open the GUI
-from Finder/Dock. It is **not self-contained or portable** and must stay at the
-repository root — details in
-[`docs/04-portabilidade.md`](docs/04-portabilidade.md).
-
 ## Usage — CLI
 
 ```bash
@@ -257,9 +252,10 @@ What usually goes wrong:
 
 The output has been **confirmed on a real console**: on **2026-10-17**, discs
 produced with `edp fdvdb` **booted** on a **stock PS2, with no modchip and
-nothing installed** (console set to `English`). This matches the exploit's
-geometry — EDP touches only the first ~0.3 MB (LBAs 14–158) and the rest of the
-ISO stays **byte-for-byte** identical to the original.
+nothing installed** (console set to `English`), from a 1.4 GiB disc up to a
+**4.03 GiB** one — nearly filling the DVD-R. This matches the exploit's geometry
+— EDP touches only the first ~0.3 MB (LBAs 14–158) and the rest of the ISO stays
+**byte-for-byte** identical to the original.
 
 > If a disc does not boot, **most of the time it is not the tool** — it is the
 > burn. Reburn (better media, 4x, verified) before opening an *issue*.
@@ -391,9 +387,8 @@ hub with a center hole): `icon.svg` (vector, for editing),
 
 The GUI applies the icon per system: **Windows** uses `edp.ico` via
 `iconbitmap`; **macOS/Linux** use `edp_128.png` via `iconphoto`; if any asset is
-missing, the GUI still opens normally (the icon is cosmetic). On macOS the
-Dock/Finder icon comes from the `EDP.app/` bundle. See `src/edp/gui/app.py` and
-[`docs/04-portabilidade.md`](docs/04-portabilidade.md).
+missing, the GUI still opens normally (the icon is cosmetic). See
+`src/edp/gui/app.py` and [`docs/04-portabilidade.md`](docs/04-portabilidade.md).
 
 ## Related tools
 
