@@ -10,6 +10,7 @@ from edp.domain.errors import (
 from edp.iso.device import MemoryDevice
 from edp.iso.inspector import IsoInspector
 from edp.iso.udf import looks_patched
+from edp.patcher.descriptor import patch_directory_descriptor
 from edp.patcher.dvd_data import load_dvd_video_data
 from edp.patcher.engine import EsrPatchEngine
 
@@ -120,19 +121,20 @@ class EngineIntegrationTests(unittest.TestCase):
         self.assertEqual(dev_a.to_bytes(), dev_b.to_bytes())
 
     def test_deterministic_golden_bytes(self):
-        """Golden: o byte alterado no descritor e exatamente o extent location."""
+        """Golden: cada byte do descritor patchado bate com o valor produzido
+        pela funcao pura ``patch_directory_descriptor`` aplicada ao bloco
+        original, byte a byte (oraculo independente do resultado em teste)."""
         device = self._device()
         EsrPatchEngine(device).patch()
         patched = device.to_bytes()
         for lba in TARGET_LBAS:
             off = lba * C.SECTOR_SIZE
+            original_block = self.original[off:off + C.SECTOR_SIZE]
+            expected_block = patch_directory_descriptor(original_block, C.DVD_VIDEO_LBA)
             for i in range(C.SECTOR_SIZE):
-                expected = self.original[off + i]
-                if i in (188, 189):
-                    expected = 128 if i == 188 else 0
-                elif i in (4, 8, 9):
-                    expected = patched[off + i]  # derivado do CRC/checksum
-                self.assertEqual(patched[off + i], expected)
+                self.assertEqual(
+                    patched[off + i], expected_block[i], "byte %d do LBA %d" % (i, lba)
+                )
 
 
 if __name__ == "__main__":
