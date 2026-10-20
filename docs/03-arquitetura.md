@@ -86,7 +86,9 @@ conhece `patcher`.
   `validate_layout()`.
 - `service.EsrService` — casos de uso de alto nível:
   `analyze(path)`, `patch_to_new_file(src, dst, progress=None)`,
-  `unpatch_to_new_file(...)`, `patch_in_place(path, progress=None)`.
+  `unpatch_to_new_file(...)`, `patch_in_place(path, progress=None)`,
+  `unpatch_in_place(path, progress=None)`, `make_fdvdb_image(src, dst, ...)` —
+  ESR + overlay FreeDVDBoot opcional (ver ADR-0005).
 
 ## Fluxo do caso de uso principal
 

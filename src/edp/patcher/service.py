@@ -46,17 +46,10 @@ class EsrService:
         progress: Optional[ProgressFn] = None,
         overwrite: bool = False,
     ) -> PatchReport:
-        self._precheck_for_patch(src, dst, overwrite)
-        try:
-            self._copy_with_progress(src, dst, progress)
-            with FileDevice(dst, "r+b") as device:
-                return EsrPatchEngine(device).patch(image_path=dst)
-        except OSError as exc:
-            self._safe_unlink(dst)
-            raise PathError("falha de E/S na saida '%s': %s" % (dst, exc))
-        except Exception:
-            self._safe_unlink(dst)
-            raise
+        return self._copy_then(
+            self._precheck_for_patch, src, dst, overwrite, progress,
+            lambda device, out: EsrPatchEngine(device).patch(image_path=out),
+        )
 
     def patch_in_place(self, path: str, progress: Optional[ProgressFn] = None) -> PatchReport:
         self._precheck_for_patch(path, path, overwrite=True, in_place=True)
@@ -85,26 +78,22 @@ class EsrService:
         Os payloads/loader vem: (1) dos caminhos explicitos, (2) de um diretorio
         de override (``EDP_FDVDB_DIR`` ou ``./payloads``) ou (3) embutidos
         no pacote (``assets/fdvdb``).
+
+        Ver ADR-0005 (docs/adr/0005-overlay-freedvdboot.md) para o porque desta
+        feature existir ao lado do patch ESR descrito na ADR-0002.
         """
         video_ts_ifo, vts_01_0_ifo, loader, source = self._resolve_payloads(
             video_ts_ifo_path, vts_01_0_ifo_path, loader_path
         )
 
-        self._precheck_for_patch(src, dst, overwrite)
-        try:
-            self._copy_with_progress(src, dst, progress)
-            with FileDevice(dst, "r+b") as device:
-                EsrPatchEngine(device).patch(image_path=dst)
-                return apply_fdvdb_overlay(
-                    device, video_ts_ifo, vts_01_0_ifo, loader,
-                    image_path=dst, payload_source=source,
-                )
-        except OSError as exc:
-            self._safe_unlink(dst)
-            raise PathError("falha de E/S na saida '%s': %s" % (dst, exc))
-        except Exception:
-            self._safe_unlink(dst)
-            raise
+        def _apply(device, out: str) -> FdvdbReport:
+            EsrPatchEngine(device).patch(image_path=out)
+            return apply_fdvdb_overlay(
+                device, video_ts_ifo, vts_01_0_ifo, loader,
+                image_path=out, payload_source=source,
+            )
+
+        return self._copy_then(self._precheck_for_patch, src, dst, overwrite, progress, _apply)
 
     # -- unpatch -------------------------------------------------------------
     def unpatch_to_new_file(
@@ -114,17 +103,10 @@ class EsrService:
         progress: Optional[ProgressFn] = None,
         overwrite: bool = False,
     ) -> PatchReport:
-        self._precheck_for_unpatch(src, dst, overwrite)
-        try:
-            self._copy_with_progress(src, dst, progress)
-            with FileDevice(dst, "r+b") as device:
-                return EsrPatchEngine(device).unpatch(image_path=dst)
-        except OSError as exc:
-            self._safe_unlink(dst)
-            raise PathError("falha de E/S na saida '%s': %s" % (dst, exc))
-        except Exception:
-            self._safe_unlink(dst)
-            raise
+        return self._copy_then(
+            self._precheck_for_unpatch, src, dst, overwrite, progress,
+            lambda device, out: EsrPatchEngine(device).unpatch(image_path=out),
+        )
 
     def unpatch_in_place(self, path: str, progress: Optional[ProgressFn] = None) -> PatchReport:
         self._precheck_for_unpatch(path, path, overwrite=True, in_place=True)
@@ -138,6 +120,35 @@ class EsrService:
         return report
 
     # -- internos ------------------------------------------------------------
+    def _copy_then(
+        self,
+        precheck_fn: Callable[[str, str, bool], IsoAnalysis],
+        src: str,
+        dst: str,
+        overwrite: bool,
+        progress: Optional[ProgressFn],
+        apply_fn: Callable[[FileDevice, str], object],
+    ):
+        """Copia ``src`` -> ``dst`` e aplica ``apply_fn`` sobre o destino.
+
+        Agrupa o shape comum a ``patch_to_new_file``, ``unpatch_to_new_file``
+        e ``make_fdvdb_image``: precheck -> copia -> abre o destino -> aplica
+        -> limpa o destino parcial em caso de erro. ``apply_fn`` recebe o
+        ``FileDevice`` aberto e o caminho do destino, e retorna o relatorio
+        (``PatchReport`` ou ``FdvdbReport``).
+        """
+        precheck_fn(src, dst, overwrite)
+        try:
+            self._copy_with_progress(src, dst, progress)
+            with FileDevice(dst, "r+b") as device:
+                return apply_fn(device, dst)
+        except OSError as exc:
+            self._safe_unlink(dst)
+            raise PathError("falha de E/S na saida '%s': %s" % (dst, exc))
+        except Exception:
+            self._safe_unlink(dst)
+            raise
+
     @staticmethod
     def _resolve_payloads(
         video_ts_ifo_path: Optional[str],
